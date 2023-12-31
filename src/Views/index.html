@@ -70,12 +70,13 @@
     <!-- Add socket io -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io({ autoConnect: false });
 
         const form = document.getElementById("form");
         const input = document.getElementById("input");
         const messages = document.getElementById("messages");
 
+        // listen for submit events
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             if (input.value) {
@@ -84,12 +85,21 @@
             }
         });
 
+        // Listen for broadcasting messages
+        socket.on("hello", (msg) => {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        // Listen for chat messages
         socket.on("chat message", (msg) => {
             const item = document.createElement('li');
             item.textContent = msg;
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
-        })
+        });
     </script>
 </body>
 

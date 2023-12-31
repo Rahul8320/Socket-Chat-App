@@ -23,9 +23,19 @@ app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "views/index.html"));
 });
 
+// socket connection
 io.on("connection", (socket) => {
+  // Broadcasting welcome message for all connected clients.
+  io.emit("hello", `Hello, ${socket.id}, Welcome to this chat room!`);
+
+  // Listen any socket event emits and log this to console.
+  socket.onAny((event, ...args) => {
+    console.log(event, args);
+  });
+
+  // listen for chat messages
   socket.on("chat message", (msg) => {
-    console.log(`message: ${msg}`);
+    // emits chat messages
     io.emit("chat message", msg);
   });
 });
